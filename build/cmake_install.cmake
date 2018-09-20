@@ -1,4 +1,4 @@
-# Install script for directory: /home/asharma/GDrive/Current_Courses/Udacity_SDCND_Engineer/T2/P1_EKF/MySubmission/CarND-Extended-Kalman-Filter-Project
+# Install script for directory: /home/asharma/GDrive/Current_Courses/Udacity_SDCND_Engineer/T2/P1_EKF/MySubmission/T2-P1-CarND-Extended-Kalman-Filter-AS
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/asharma/GDrive/Current_Courses/Udacity_SDCND_Engineer/T2/P1_EKF/MySubmission/CarND-Extended-Kalman-Filter-Project/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/asharma/GDrive/Current_Courses/Udacity_SDCND_Engineer/T2/P1_EKF/MySubmission/T2-P1-CarND-Extended-Kalman-Filter-AS/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

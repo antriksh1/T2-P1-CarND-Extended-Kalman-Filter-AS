@@ -49,6 +49,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   cout << "Q:" << Q_ << endl;
   cout << "H:" << H_ << endl;
   cout << "R:" << R_ << endl;
+  cout << "----------------" << endl;
 
 	VectorXd z_pred = H_ * x_;
 	VectorXd y = z - z_pred;
@@ -81,26 +82,27 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   cout << "H:" << H_ << endl;
   cout << "R:" << R_ << endl;
 
+  cout << "z:" << z << endl;
+
   Tools tools;
 
-  cout << "Here before Hj_x: " << endl;
   MatrixXd Hj_ = tools.CalculateJacobian(x_);
   cout << "Hj_: " << Hj_ << endl;
 
-  cout << "z:" << z << endl;
   VectorXd hx(3);
   float px = x_[0];
   float py = x_[1];
   float vx = x_[2];
   float vy = x_[3];
   float rho = sqrt(px*px + py*py);
-  float phi = (py/px);
+  float phi = (py/px); // BECAUSE artan(x) = x
   float rho_dot = (px*vx + py*vy)/rho;
   hx << rho, phi, rho_dot;
   cout << "hx: " << hx << endl;
 
   VectorXd y = z - hx;
   cout << "y: " << y << endl;
+  cout << "----------------" << endl;
 
   MatrixXd Hj_t = Hj_.transpose();
   MatrixXd S = Hj_ * P_ * Hj_t + R_;
