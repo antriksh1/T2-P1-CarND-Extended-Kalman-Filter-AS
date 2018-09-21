@@ -1,6 +1,5 @@
 #include <iostream>
 #include "kalman_filter.h"
-#include "tools.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -37,19 +36,19 @@ void KalmanFilter::Predict() {
 void KalmanFilter::Update(const VectorXd &z) {
   /**
   TODO:
-    * update the state by using Kalman Filter equations
-  */
-  ///////////////////////////////
-  // DEBUG
-  ///////////////////////////////
-  cout << "IN Update()" << endl;
-  cout << "x:" << x_ << endl;
-  cout << "P:" << P_ << endl;
-  cout << "F:" << F_ << endl;
-  cout << "Q:" << Q_ << endl;
-  cout << "H:" << H_ << endl;
-  cout << "R:" << R_ << endl;
-  cout << "----------------" << endl;
+	* update the state by using Kalman Filter equations
+	*/
+	///////////////////////////////
+	// DEBUG
+	///////////////////////////////
+//	cout << "IN Update()" << endl;
+//	cout << "x:" << x_ << endl;
+//	cout << "P:" << P_ << endl;
+//	cout << "F:" << F_ << endl;
+//	cout << "Q:" << Q_ << endl;
+//	cout << "H:" << H_ << endl;
+//	cout << "R:" << R_ << endl;
+//	cout << "----------------" << endl;
 
 	VectorXd z_pred = H_ * x_;
 	VectorXd y = z - z_pred;
@@ -66,7 +65,7 @@ void KalmanFilter::Update(const VectorXd &z) {
 	P_ = (I - K * H_) * P_;
 }
 
-void KalmanFilter::UpdateEKF(const VectorXd &z) {
+void KalmanFilter::UpdateEKF(const VectorXd &z, KalmanFilter ekf_) {
   /**
   TODO:
     * update the state by using Extended Kalman Filter equations
@@ -74,46 +73,44 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   ///////////////////////////////
   // DEBUG
   ///////////////////////////////
-  cout << "IN UpdateEKF()" << endl;
-  cout << "x:" << x_ << endl;
-  cout << "P:" << P_ << endl;
-  cout << "F:" << F_ << endl;
-  cout << "Q:" << Q_ << endl;
-  cout << "H:" << H_ << endl;
-  cout << "R:" << R_ << endl;
+//  cout << "IN UpdateEKF()" << endl;
+//  cout << "x:" << x_ << endl;
+//  cout << "P:" << P_ << endl;
+//  cout << "F:" << F_ << endl;
+//  cout << "Q:" << Q_ << endl;
+//  cout << "H:" << H_ << endl;
+//  cout << "R:" << R_ << endl;
 
-  cout << "z:" << z << endl;
-
-  Tools tools;
-
-  MatrixXd Hj_ = tools.CalculateJacobian(x_);
-  cout << "Hj_: " << Hj_ << endl;
+//  cout << "z:" << z << endl;
 
   VectorXd hx(3);
-  float px = x_[0];
-  float py = x_[1];
-  float vx = x_[2];
-  float vy = x_[3];
+  float px = ekf_.x_[0];
+  float py = ekf_.x_[1];
+  float vx = ekf_.x_[2];
+  float vy = ekf_.x_[3];
   float rho = sqrt(px*px + py*py);
-  float phi = (py/px); // BECAUSE artan(x) = x
+  float phi = atan2(py,px);
   float rho_dot = (px*vx + py*vy)/rho;
   hx << rho, phi, rho_dot;
-  cout << "hx: " << hx << endl;
+//  cout << "hx: " << hx << endl;
 
   VectorXd y = z - hx;
-  cout << "y: " << y << endl;
-  cout << "----------------" << endl;
+  while(y(1) > M_PI) { y(1) -= M_PI; }
+  while(y(1) < -M_PI) { y(1) += M_PI; }
 
-  MatrixXd Hj_t = Hj_.transpose();
-  MatrixXd S = Hj_ * P_ * Hj_t + R_;
+//  cout << "y: " << y << endl;
+//  cout << "----------------" << endl;
+
+  MatrixXd Ht = H_.transpose();
+  MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
-  MatrixXd PHt = P_ * Hj_t;
+  MatrixXd PHt = P_ * Ht;
   MatrixXd K = PHt * Si;
 
   //new estimate
   x_ = x_ + (K * y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
-  P_ = (I - K * Hj_) * P_;
+  P_ = (I - K * H_) * P_;
 
 }
